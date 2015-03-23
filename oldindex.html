@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+
+    function transx(geo, n) {
+        for (var i = 0; i < geo.vertices.length; i++) {
+            geo.vertices[i].x += n;
+        }
+    }
+
+    /**
+     * Translate all points in a geometry `n` units in the z direction.
+     */
+    function transz(geo, n) {
+        for (var i = 0; i < geo.vertices.length; i++) {
+            geo.vertices[i].z += n;
+        }
+    }
+
+    var map = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+        [1, 1, 0, 1, 0, 1, 0, 0, 0, 1],
+        [1, 0, 1, 1, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 1, 1, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ];
+
+    var scene, camera, renderer;
+    var hudScene, hudCam, hudRenderer, hudMesh;
+    var geometry, material, mesh;
+    var context, cnvText;
+
+    init();
+    animate();
+
+    function init() {
+        var WIDTH = 160;
+        var HEIGHT = 120;
+        var scale = Math.floor(window.innerHeight / HEIGHT);
+
+        var wWidth = WIDTH * scale;
+        var wHeight = HEIGHT * scale;
+        var aspect = wWidth / wHeight;
+
+
+        var canvas = document.createElement('canvas');
+        canvas.width = wWidth / scale;
+        canvas.height = wHeight / scale;
+        canvas.imageSmoothingEnabled = false;
+
+        context = canvas.getContext('2d');
+        context.imageSmoothingEnabled = false;
+        context.webkitImageSmoothingEnabled = false;
+        context.mozImageSmoothingEnabled = false;
+        context.oImageSmoothingEnabled = false;
+
+//        context.fillStyle = 'rgb(100,50,50)';
+        context.fillStyle = 'rgb(100,50,150)';
+//        context.fillRect(110, 5, 45, 45);
+
+        context.fillStyle = 'rgb(50, 50, 75)';
+        context.fillRect(3, 90, 154, 30);
+
+        context.fillstyle = 'rgb(250, 50, 200)';
+        context.fillRect(3, 80, 1, 5);
+
+
+        cnvText = new THREE.Texture(canvas);
+        cnvText.needsUpdate = true;
+        cnvText.minFilter = THREE.NearestFilter;
+        cnvText.magFilter = THREE.NearestFilter;
+
+        var img = THREE.ImageUtils.loadTexture('walltexture.png');
+        img.minFilter = THREE.NearestFilter;
+        img.magFilter = THREE.NearestFilter;
+
+        var font = THREE.ImageUtils.loadTexture('roses.png');
+        font.minFilter = THREE.NearestFilter;
+        font.magFilter = THREE.NearestFilter;
+
+        scene = new THREE.Scene();
+        hudScene = new THREE.Scene();
+
+//        var aspect = 4 / 3;
+//        var aspect = window.innerWidth / window.innerHeight;
+
+        camera = new THREE.PerspectiveCamera(80, aspect, 1, 10000);
+        camera.position.z = 600;
+        camera.position.x = 400;
+        camera.position.y = -20;
+
+//        var width = window.innerWidth;
+//        var height = window.innerHeight;
+
+        var width = wWidth;
+        var height = wHeight;
+
+        hudCam = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 10000);
+        hudCam.position.z = 100;
+
+
+        var planeGeom = new THREE.PlaneBufferGeometry(wWidth / 1, wHeight / 1);
+        var textMater = new THREE.MeshBasicMaterial({
+            map: cnvText,
+            color: 0x0feebb,
+            transparent: true
+        });
+
+        geometry = new THREE.BoxGeometry(200, 200, 200);
+        material = new THREE.MeshBasicMaterial({color: 0xaabbaa, wireframe: false, map: img});
+
+
+        for (var j = 0; j < map.length; j++) {
+            for (var i = 0; i < map[j].length; i++) {
+
+                if (map[j][i] === 1) {
+                    var tmp = new THREE.BoxGeometry(200, 200, 200);
+                    transx(tmp, i * 200);
+                    transz(tmp, j * 200);
+
+                    geometry.merge(tmp);
+                }
+
+            }
+        }
+
+        mesh = new THREE.Mesh(geometry, material);
+        hudMesh = new THREE.Mesh(planeGeom, textMater);
+
+
+        scene.add(mesh);
+
+        hudMesh.lookAt(hudCam.position); // Rotate the mesh so the face is fully visible by the camera
+        hudScene.add(hudMesh);
+
+        renderer = new THREE.WebGLRenderer({antialiasing: false});
+
+//        renderer.setSize(window.innerWidth, Math.floor(window.innerHeight / 512) * 512);
+////        renderer.setSize(640, 480);
+//        renderer.setViewport( 0, 0, 512*2, 512*2 );
+
+//        var DPR = (window.devicePixelRatio) ? window.devicePixelRatio : 1;
+//        var WW = window.innerWidth;
+//        var HH = window.innerHeight;
+//        renderer.setSize(WW, HH);
+//        renderer.setViewport(0, 0, WW * DPR, HH * DPR);
+
+//        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        renderer.setSize(wWidth, wHeight);
+        renderer.setClearColor(0x0088FF, 1);
+        renderer.autoClear = false;
+
+        renderer.render(scene, camera);
+        renderer.render(hudScene, hudCam);
+
+        document.body.appendChild(renderer.domElement);
+
+        document.addEventListener('keydown', onKeyDown, false);
+
+    }
+
+
+    function onKeyDown(e) {
+        var keyCode = e.which || e.keyCode;
+        if (keyCode == 87) {
+            camera.translateZ(-200);
+        }
+        if (keyCode == 68) {
+            camera.rotation.y -= (Math.PI / 2);
+        }
+        if (keyCode == 83) {
+            camera.translateZ(200);
+        }
+        if (keyCode == 65) {
+            camera.rotation.y += (Math.PI / 2);
+        }
+    }
+
+    function onKeyUp(evt) {
+
+    }
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+//        mesh.rotation.x += 0.01;
+//        mesh.rotation.y += 0.005;
+
+//        camera.rotation.y += 0.005;
+        renderer.render(scene, camera);
+        renderer.render(hudScene, hudCam);
+
+
+//        if (Math.random() > 0.995) {
+//            var r = Math.floor(Math.random() * 255);
+//            var g = Math.floor(Math.random() * 255);
+//            var b = Math.floor(Math.random() * 255);
+//
+//            context.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+//            context.fillRect(110, 5, 45, 45);
+//
+//            cnvText.needsUpdate = true;
+//        }
+    }
+
+</script>
+</body>
+</html>
