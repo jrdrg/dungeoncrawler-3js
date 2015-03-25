@@ -36,6 +36,8 @@ app.all('/*', function (req, res, next) {
 
 
 var port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 13098;
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP;
 
-app.listen(port);
+console.log("Listening on port " + port + ", ip=" + server_ip_address);
+
+app.listen(port, server_ip_address);
