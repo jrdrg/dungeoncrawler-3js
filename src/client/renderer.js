@@ -111,7 +111,7 @@ function initializeMap() {
 
 
     playerLight = new THREE.PointLight(0xaaaaaa);
-    playerLight.castShadow = false;
+    playerLight.castShadow = true;
     playerLight.shadowMapWidth = 128;
     playerLight.shadowMapHeight = 128;
     playerLight.shadowCameraNear = 1;
@@ -120,8 +120,8 @@ function initializeMap() {
     playerLight.shadowDarkness = 0.75; //XXX: Can change later...
     playerLight.intensity = 2.5;
     //playerLight.exponent = 20;
-    playerLight.angle = Math.PI / 3;
-    playerLight.distance = 200 * 10;
+    playerLight.angle = Math.PI / 2;
+    playerLight.distance = 200 * 8;
 
     //scene.add(playerLight);
 

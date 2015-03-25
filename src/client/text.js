@@ -71,10 +71,11 @@ function drawGlyph(code, color) {
         h: character.height
     }, config.scale);
 
-    var src = {x: character.x, y: character.y, w: character.width, h: character.height};
 
-    ctx.drawImage(fontColors[color], src.x, src.y, src.w, src.h, dst.x, dst.y, dst.w, dst.h);
-
+    if (character.width && character.height) {
+        var src = {x: character.x, y: character.y, w: character.width, h: character.height};
+        ctx.drawImage(fontColors[color], src.x, src.y, src.w, src.h, dst.x, dst.y, dst.w, dst.h);
+    }
     return character.xadvance; // to advance the cursor
 }
 

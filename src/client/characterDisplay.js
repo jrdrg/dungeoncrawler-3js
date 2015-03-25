@@ -17,10 +17,10 @@ var input = require('./input');
 
 
 var party = [
-    {name: 'Char1', className: 'Fighter', level: 1, hp: 10, maxHp: 10},
-    {name: 'Char2', className: 'Thief', level: 1, hp: 8, maxHp: 8},
-    {name: 'Char2', className: 'Priest', level: 1, hp: 8, maxHp: 8},
-    {name: 'Char2', className: 'Wizard', level: 1, hp: 4, maxHp: 4},
+    {name: 'Char 1', className: 'Fighter', level: 1, hp: 10, maxHp: 10},
+    {name: 'Char 2', className: 'Thief', level: 1, hp: 8, maxHp: 8},
+    {name: 'Char 2', className: 'Priest', level: 1, hp: 8, maxHp: 8},
+    {name: 'Char 2', className: 'Wizard', level: 1, hp: 4, maxHp: 4},
 ];
 
 
