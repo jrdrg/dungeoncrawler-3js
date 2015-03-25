@@ -6,26 +6,25 @@
 
 var movement = module.exports = {};
 
-var activeMap = require('../../activeMap');
-var input = require('../../input');
-var player = require('../../player');
-var sounds = require('../../sounds');
-var util = require('../../utils');
+var activeMap = require('../../activeMap'),
+    input = require('../../input'),
+    player = require('../../player'),
+    sounds = require('../../sounds'),
+    util = require('../../utils');
 
 
-var TURN_SPEED = (Math.PI / 2) / 60;    // 60 frames to turn
 var keys = {left: false, right: false, up: false, down: false};
 
 var turnTo = {
-    from: 0,
-    to: 0,
-    dir: 0
-};
-var walkTo = {
-    from: 0,
-    to: 0,
-    dir: 0
-};
+        from: 0,
+        to: 0,
+        dir: 0
+    },
+    walkTo = {
+        from: 0,
+        to: 0,
+        dir: 0
+    };
 
 
 movement.processKeys = processKeys;
@@ -33,64 +32,33 @@ movement.update = update;
 
 
 function processKeys() {
-    keys = {left: false, right: false, up: false, down: false};
-    var keyPressed = false;
-    for (var key in keys) {
-        if (keys.hasOwnProperty(key)) {
 
-            if (input.keyDown(key)) {
+    keys = {
+        left: false, right: false, up: false, down: false
+    };
+    if (player.getState() === player.states.INPUT) {
+        var keyPressed = false;
+        for (var key in keys) {
+            if (keys.hasOwnProperty(key)) {
 
-                //TODO: do we need to check handleKey here? probably not so the player can hold down the key without releasing it to keep moving/turning
+                if (input.keyDown(key)) {
 
-                input.handleKey(key, true);
+                    if (!input.processedKey(key)) {
+                        input.handleKey(key, true);
 
-                console.log(key);
-                keys[key] = true;
-
-                keyPressed = true;
-                break;
+                        keys[key] = true;
+                        keyPressed = true;
+                        break;
+                    }
+                }
             }
         }
     }
-
-
-    //if (input.keyDown('left')) {
-    //    if (!input.processedKey('left')) {
-    //        input.handleKey('left', true);
-    //
-    //        console.log('left');
-    //        keys.left = true;
-    //    }
-    //
-    //} else if (input.keyDown('right')) {
-    //    if (!input.processedKey('right')) {
-    //        input.handleKey('right', true);
-    //
-    //        console.log('right');
-    //        keys.right = true;
-    //    }
-    //
-    //} else if (input.keyDown('up')) {
-    //    if (!input.processedKey('up')) {
-    //        input.handleKey('up', true);
-    //
-    //        keys.up = true;
-    //    }
-    //
-    //} else if (input.keyDown('left')) {
-    //    if (!input.processedKey('left')) {
-    //        input.handleKey('left', true);
-    //
-    //        keys.left = true;
-    //    }
-    //
-    //}
 }
 
 function update(delta) {
 
     var vect;
-
     switch (player.getState()) {
 
         case player.states.INPUT:
@@ -167,6 +135,10 @@ function update(delta) {
             player.direction = player.direction % (Math.PI * 2);
 
             if (reachedDestination(turnTo.from, turnTo.to, player.direction)) {
+
+                input.handleKey('left', false);
+                input.handleKey('right', false);
+
                 player.setState(player.states.INPUT);
                 player.direction = turnTo.to;
                 turnTo = {from: 0, to: 0, dir: 0};
@@ -183,6 +155,10 @@ function update(delta) {
             var reachedY = reachedDestination(walkTo.from.y, walkTo.to.y, player.position.y);
 
             if (reachedX && reachedY) {
+
+                input.handleKey('up', false);
+                input.handleKey('down', false);
+
                 player.setState(player.states.INPUT);
                 player.position.x = walkTo.to.x;
                 player.position.y = walkTo.to.y;

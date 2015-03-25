@@ -5,6 +5,7 @@
 'use strict';
 
 var player = module.exports = {
+    currentMap: 0,
     direction: 0,
     flags: []
 };
@@ -13,7 +14,8 @@ var player = module.exports = {
 var states = {
         MOVING: 0,
         TURNING: 1,
-        INPUT: 2
+        INPUT: 2,
+        NO_MOVE: 3
     },
     currentState = states.INPUT;
 

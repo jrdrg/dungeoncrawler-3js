@@ -11,6 +11,7 @@ var viewRenderer = module.exports = {
         return domElement;
     },
     'initialize': initialize,
+    'initializeMap': initializeMap,
     'render': render,
     'update': update
 };
@@ -36,6 +37,7 @@ var scene, hudScene;
 var camera, hudCam;
 var renderer;
 var domElement;
+var playerLight;
 
 var tileSize = 200,
     WIDTH = config.width,
@@ -53,7 +55,6 @@ function initialize() {
     var context = canvas.context;
 
     context.fillStyle = 'rgb(100,50,150)';
-
     context.fillStyle = 'rgb(50, 50, 75)';
     //context.fillRect(5, 180, 310, 60);
 
@@ -65,16 +66,6 @@ function initialize() {
     cnvText.needsUpdate = true;
     cnvText.minFilter = THREE.NearestFilter;
     cnvText.magFilter = THREE.NearestFilter;
-
-    //var img = new Image();
-    //img.onload = function () {
-    //    context.drawImage(img, 0, 0, 128, 128);
-    //
-    //    context.fillStyle = 'rgb(50, 50, 75)';
-    //    context.fillRect(5, 180, 310, 60);
-    //    cnvText.needsUpdate = true;
-    //};
-    //img.src = '/fontImage/roses';
 
 
     scene = new THREE.Scene();
@@ -97,13 +88,7 @@ function initialize() {
     });
 
 
-    var mesh = mapGeometry.getMapMesh(atlas.maps[0].data);
-
     hudMesh = new THREE.Mesh(planeGeom, textMater);
-
-
-    scene.add(mesh);
-
     hudMesh.lookAt(hudCam.position); // Rotate the mesh so the face is fully visible by the camera
     hudScene.add(hudMesh);
 
@@ -114,16 +99,42 @@ function initialize() {
     renderer.setClearColor(0x0088FF, 1);
     renderer.autoClear = false;
 
+    domElement = renderer.domElement;
+}
+
+function initializeMap() {
+    var geometry = mapGeometry.getMapGeometry(atlas.maps[0].data);
+    var mesh = geometry.mesh;
+    var floor = geometry.floor;
+    scene.add(mesh);
+    scene.add(floor);
+
+
+    playerLight = new THREE.PointLight(0xaaaaaa);
+    playerLight.castShadow = false;
+    playerLight.shadowMapWidth = 128;
+    playerLight.shadowMapHeight = 128;
+    playerLight.shadowCameraNear = 1;
+    playerLight.shadowCameraFar = 100; //XXX: That should be far enough.
+    playerLight.shadowCameraFov = 90;
+    playerLight.shadowDarkness = 0.75; //XXX: Can change later...
+    playerLight.intensity = 2.5;
+    //playerLight.exponent = 20;
+    playerLight.angle = Math.PI / 3;
+    playerLight.distance = 200 * 10;
+
+    //scene.add(playerLight);
+
+    scene.add(camera);
+    camera.add(playerLight);
+
     renderer.render(scene, camera);
     renderer.render(hudScene, hudCam);
 
-    //document.body.appendChild(renderer.domElement);
-    domElement = renderer.domElement;
 }
 
 
 function update(delta) {
-
     camera.rotation.y = player.direction;
     camera.position.z = tileSize * player.position.y;   // z-coord: fwd/back
     camera.position.x = tileSize * player.position.x;   // x-coord: left/right

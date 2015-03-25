@@ -162,7 +162,6 @@ gulp.task('browserify', ['clean', 'lint'], function () {
             .pipe(buffer())
             .pipe(sourcemaps.init({loadMaps: true}))
             // Add transformation tasks to the pipeline here.
-            //.pipe(ngAnnotate())
             //.pipe(uglify())
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('./public/js/'));

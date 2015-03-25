@@ -7,6 +7,9 @@
 var text = require('../text');
 var images = require('../images');
 var gameState = require('../gameState');
+var mapGeometry = require('../map/mapGeometry');
+var renderer = require('../renderer');
+
 
 module.exports = {
     update: update,
@@ -23,7 +26,8 @@ function render() {
 
 
 function update(delta) {
-    if (text.loaded && images.isLoaded()) {
+    if (text.loaded && images.isLoaded() && mapGeometry.loadTextures()) {
+        renderer.initializeMap();
         gameState.setNextState(gameState.states.DUNGEON);
     }
 }
