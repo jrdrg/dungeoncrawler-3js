@@ -118,8 +118,8 @@ function loadFontImage(fontImg) {
         // 252 234 199
 
         /*  assign color changes here */
-        fontColors.red.src = changeColor(fontImg, {r: 200, g: 50, b: 50}, {r: 252, g: 234, b: 199});
-        fontColors.green.src = changeColor(fontImg, {r: 50, g: 200, b: 50}, {r: 252, g: 234, b: 199});
+        fontColors.red.src = changeColor(fontImg, {r: 200, g: 50, b: 50});//, {r: 252, g: 234, b: 199});
+        fontColors.green.src = changeColor(fontImg, {r: 50, g: 200, b: 50});//, {r: 252, g: 234, b: 199});
 
         imageLoaded = true;
         textExport.loaded = imageLoaded && dataLoaded;

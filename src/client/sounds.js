@@ -19,10 +19,18 @@ module.exports = {
 
 /////////////////////////////
 
+function loaded() {
+
+}
+
 function loadSound(sound, volume) {
-    var snd = new Audio('/sounds/' + sound + '.wav');
-    snd.volume = volume || 1.0;
-    return snd;
+    //var snd = new Audio('/sounds/' + sound + '.wav');
+    var elem = document.createElement('audio');
+    elem.src = '/sounds/' + sound + '.wav';
+    //snd.volume = volume || 1.0;
+    //return snd;
+    elem.volume = volume || 1.0;
+    return elem;
 }
 
 
