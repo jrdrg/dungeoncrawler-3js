@@ -9,7 +9,6 @@
   "scripts": {
     "start": "node serverApp.js"
   },
-  "main": "serverApp.js",
   "author": "",
   "license": "ISC",
   "devDependencies": {
