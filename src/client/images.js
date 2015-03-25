@@ -19,15 +19,15 @@ images.floorTexture = loadImage('floortexture');
 
 //images.title = loadImage('title');
 //
-//images.borderUL = loadImage('textborder', {x: 0, y: 0, w: 16, h: 16});
-//images.borderU = loadImage('textborder', {x: 16, y: 0, w: 16, h: 16});
-//images.borderUR = loadImage('textborder', {x: 32, y: 0, w: 16, h: 16});
-//images.borderL = loadImage('textborder', {x: 0, y: 16, w: 16, h: 16});
-//images.borderM = loadImage('textborder', {x: 16, y: 16, w: 16, h: 16});
-//images.borderR = loadImage('textborder', {x: 32, y: 16, w: 16, h: 16});
-//images.borderBL = loadImage('textborder', {x: 0, y: 32, w: 16, h: 16});
-//images.borderB = loadImage('textborder', {x: 16, y: 32, w: 16, h: 16});
-//images.borderBR = loadImage('textborder', {x: 32, y: 32, w: 16, h: 16});
+images.borderUL = loadImage('textborder', {x: 0, y: 0, w: 16, h: 16});
+images.borderU = loadImage('textborder', {x: 16, y: 0, w: 16, h: 16});
+images.borderUR = loadImage('textborder', {x: 32, y: 0, w: 16, h: 16});
+images.borderL = loadImage('textborder', {x: 0, y: 16, w: 16, h: 16});
+images.borderM = loadImage('textborder', {x: 16, y: 16, w: 16, h: 16});
+images.borderR = loadImage('textborder', {x: 32, y: 16, w: 16, h: 16});
+images.borderBL = loadImage('textborder', {x: 0, y: 32, w: 16, h: 16});
+images.borderB = loadImage('textborder', {x: 16, y: 32, w: 16, h: 16});
+images.borderBR = loadImage('textborder', {x: 32, y: 32, w: 16, h: 16});
 //
 //images.room = loadImage('mapTiles', {x: 16, y: 0, w: 16, h: 16});
 //images.visitedroom = loadImage('mapTiles', {x: 0, y: 0, w: 16, h: 16});
@@ -38,7 +38,7 @@ images.floorTexture = loadImage('floortexture');
 //
 //images.stairsUp = loadImage('mapTiles', {x: 32, y: 16, w: 16, h: 16});
 //
-//images.skull = loadImage('skull', {x: 0, y: 0, w: 50, h: 50});
+images.skull = loadImage('skull', {x: 0, y: 0, w: 50, h: 50});
 //
 //
 //images.tilesets = {};   // indexed by distance from player, 0=closest (tiles1), 4=furthest (tiles5)

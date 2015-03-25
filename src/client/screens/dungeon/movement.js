@@ -53,10 +53,13 @@ function processKeys() {
                 }
             }
         }
+
+        return keyPressed;
     }
+    return false;
 }
 
-function update(delta) {
+function update(delta, moveCompleteCallback) {
 
     var vect;
     switch (player.getState()) {
@@ -123,6 +126,9 @@ function update(delta) {
 
                     sounds.playSound('NO_MOVE');
                     walkTo = {from: 0, to: 0, dir: 0};
+
+                    // we can't move here, maybe do an action
+                    moveCompleteCallback(false);
                 }
 
             }
@@ -163,6 +169,9 @@ function update(delta) {
                 player.position.x = walkTo.to.x;
                 player.position.y = walkTo.to.y;
                 walkTo = {from: 0, to: 0, dir: 0};
+
+                // we moved somewhere so maybe take an action
+                moveCompleteCallback(true);
             }
 
             break;

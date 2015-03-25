@@ -5,7 +5,7 @@
 'use strict';
 
 var sounds = {
-    MOVE: loadSound('walking', 0.4),
+    MOVE: loadSound('walking', 0.5),
     NO_MOVE: loadSound('nomove'),
     START_BATTLE: loadSound('startbattle2')
 };

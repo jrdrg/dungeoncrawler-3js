@@ -93,29 +93,17 @@ function getFloor(map) {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
 
-    //texture.repeat.set(width * 3, height * 3);
-    texture.repeat.set(25 ,25);
+    texture.repeat.set(width * 2, height * 2);
     texture.needsUpdate = true;
-    var material = new THREE.MeshPhongMaterial({map: texture, doubleSided: true, side: THREE.DoubleSide});
 
-    var geometryPlane = new THREE.PlaneBufferGeometry(width * 3 * cellSize, height * 3 * cellSize);
+    var material = new THREE.MeshPhongMaterial({map: texture, doubleSided: true, side: THREE.DoubleSide});
+    var geometryPlane = new THREE.PlaneBufferGeometry(width * 2 * cellSize, height * 2 * cellSize);
     var plane = new THREE.Mesh(geometryPlane, material);
 
-    //plane.rotation.x = -Math.PI / 2;
+    plane.rotation.x = -Math.PI / 2;
     plane.position.y = -100;    // center is at 0, height is 200
     plane.position.x = 0;
     plane.position.z = 0;
 
-    var plane2geom = new THREE.PlaneBufferGeometry(200*25, 200*25);
-    //var plane2geom = new THREE.PlaneBufferGeometry(width * 1 * cellSize, height * 1 * cellSize);
-    var material2 = new THREE.MeshPhongMaterial({map: texture, doubleSided: true, side: THREE.DoubleSide});
-    var plane2 = new THREE.Mesh(plane2geom, material2);
-
-    plane2.rotation.x = -Math.PI / 2;
-    plane2.position.y = -100;
-    plane2.position.x = 600;
-    plane2.position.z = 800;
-
-
-    return plane2;
+    return plane;
 }
