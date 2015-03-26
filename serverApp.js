@@ -41,3 +41,4 @@ var server_ip_address = process.env.OPENSHIFT_NODEJS_IP;
 console.log("Listening on port " + port + ", ip=" + server_ip_address);
 
 app.listen(port, server_ip_address);
+

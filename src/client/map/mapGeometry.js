@@ -4,6 +4,12 @@
 
 'use strict';
 
+module.exports = {
+    getMapGeometry: getMapGeometry,
+    loadTextures: loadTextures
+};
+
+
 var textureCount = 0;
 var textures = {
     wall: THREE.ImageUtils.loadTexture('/images/walltexture.png', {}, function () {
@@ -14,19 +20,33 @@ var textures = {
     })
 };
 
-module.exports = {
-    loadTextures: loadTextures,
-    getMapGeometry: getMapGeometry,
-    getMapMesh: getMapMesh
-};
 
-
+/**
+ * Allows preloading of all textures before we start rendering anything
+ * @returns {boolean} True when all textures have been loaded.
+ */
 function loadTextures() {
     return (textureCount === Object.keys(textures).length);
 }
 
 
-function transx(geo, n) {
+/**
+ * Returns two meshes for the map itself and the floor
+ * @param map
+ * @returns {{mesh: *, floor: *}}
+ */
+function getMapGeometry(map) {
+    return {
+        mesh: getMapMesh(map),
+        floor: getFloor(map)
+    };
+}
+
+
+/**
+ * Translate all points in a geometry `n` units in the x direction.
+ */
+function transX(geo, n) {
     for (var i = 0; i < geo.vertices.length; i++) {
         geo.vertices[i].x += n;
     }
@@ -35,48 +55,10 @@ function transx(geo, n) {
 /**
  * Translate all points in a geometry `n` units in the z direction.
  */
-function transz(geo, n) {
+function transZ(geo, n) {
     for (var i = 0; i < geo.vertices.length; i++) {
         geo.vertices[i].z += n;
     }
-}
-
-
-function getMapGeometry(map) {
-    return {
-        mesh: getMapMesh(map),
-        floor: getFloor(map)
-    };
-}
-
-function getMapMesh(map) {
-    var geometry, material, mesh;
-    var img = textures.wall;
-    img.minFilter = THREE.NearestFilter;
-    img.magFilter = THREE.NearestFilter;
-
-
-    geometry = new THREE.BoxGeometry(200, 200, 200);
-    material = new THREE.MeshLambertMaterial({color: 0xaabbaa, wireframe: false, map: img});
-
-
-    for (var j = 0; j < map.length; j++) {
-        for (var i = 0; i < map[j].length; i++) {
-
-            if (map[j][i] === 1) {
-                var tmp = new THREE.BoxGeometry(200, 200, 200);
-                transx(tmp, i * 200);
-                transz(tmp, j * 200);
-                console.log('i=' + i + ', j=' + j);
-
-                geometry.merge(tmp);
-            }
-
-        }
-    }
-
-    mesh = new THREE.Mesh(geometry, material);
-    return mesh;
 }
 
 
@@ -93,17 +75,50 @@ function getFloor(map) {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
 
-    texture.repeat.set(width * 2, height * 2);
+    texture.repeat.set(width * 1, height * 1);
     texture.needsUpdate = true;
 
     var material = new THREE.MeshPhongMaterial({map: texture, doubleSided: true, side: THREE.DoubleSide});
-    var geometryPlane = new THREE.PlaneBufferGeometry(width * 2 * cellSize, height * 2 * cellSize);
+    var geometryPlane = new THREE.PlaneBufferGeometry(width * 1 * cellSize, height * 1 * cellSize);
     var plane = new THREE.Mesh(geometryPlane, material);
 
     plane.rotation.x = -Math.PI / 2;
     plane.position.y = -100;    // center is at 0, height is 200
-    plane.position.x = 0;
-    plane.position.z = 0;
+    plane.position.x = (width / 2) * cellSize;
+    plane.position.z = (height / 2) * cellSize;
 
     return plane;
 }
+
+
+function getMapMesh(map) {
+    var geometry, material, mesh;
+    var img = textures.wall;
+    img.minFilter = THREE.NearestFilter;
+    img.magFilter = THREE.NearestFilter;
+
+    geometry = new THREE.BoxGeometry(200, 200, 200);
+    material = new THREE.MeshLambertMaterial({color: 0xaabbaa, wireframe: false, map: img});
+
+    var height = map.length;
+    var width = map[0].length;
+
+    for (var j = 0; j < height; j++) {
+        for (var i = 0; i < width; i++) {
+
+            if (map[j][i] === 1) {
+                var tmp = new THREE.BoxGeometry(200, 200, 200);
+                transX(tmp, i * 200);
+                transZ(tmp, j * 200);
+
+                geometry.merge(tmp);
+            }
+
+        }
+    }
+
+    mesh = new THREE.Mesh(geometry, material);
+    return mesh;
+}
+
+

@@ -12,15 +12,15 @@ module.exports = {
 
 
 //var party = require('./characters/party');
-var text = require('./text');
-var input = require('./input');
+var text = require('./../text');
+var input = require('./../input');
 
 
 var party = [
     {name: 'Char 1', className: 'Fighter', level: 1, hp: 10, maxHp: 10},
     {name: 'Char 2', className: 'Thief', level: 1, hp: 8, maxHp: 8},
-    {name: 'Char 2', className: 'Priest', level: 1, hp: 8, maxHp: 8},
-    {name: 'Char 2', className: 'Wizard', level: 1, hp: 4, maxHp: 4},
+    {name: 'Char 3', className: 'Priest', level: 1, hp: 8, maxHp: 8},
+    {name: 'Char 4', className: 'Wizard', level: 1, hp: 4, maxHp: 4}
 ];
 
 
@@ -32,14 +32,8 @@ var widths = {
 };
 
 
-function update(delta, rect) {
+function update(delta) {
     // no update yet
-    for (var i = 0; i < party.length; i++) {
-        var clickPos = {x: rect.x, y: rect.y + (i * 10), w: rect.w, h: 10};
-        if (input.isClicked(clickPos)) {
-
-        }
-    }
 }
 
 

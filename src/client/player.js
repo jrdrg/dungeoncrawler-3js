@@ -23,11 +23,14 @@ var states = {
 player.direction = Math.PI;
 player.hasFlag = hasFlag;
 player.position = {x: 3, y: 3};
+player.setFlag = setFlag;
 player.states = states;
+
 
 player.getState = function getState() {
     return currentState;
 };
+
 player.setState = function setState(state) {
     currentState = state;
 };
@@ -35,4 +38,9 @@ player.setState = function setState(state) {
 
 function hasFlag(flag) {
     return player.flags.indexOf(flag) >= 0;
+}
+
+
+function setFlag(flag) {
+    player.flags.push(flag);
 }

@@ -11,49 +11,43 @@ var canvas = require('../../canvas'),
     config = require('../../config'),
     hud = require('../../hud'),
     input = require('../../input'),
-    movement = require('./movement'),
+    keys = require('./keys'),
     renderer = require('../../renderer'),
     text = require('../../text');
 
-var charDisplay = require('../../characterDisplay');
+
+var states = {
+        EXPLORE: require('./explore'),
+        BATTLE: require('./combat'),
+        MENU: {}
+    },
+    currentState = states.EXPLORE;
+
 
 /**
  * @description     Updates each frame
  */
 dungeon.update = function update(delta) {
-    var keyPressed = movement.processKeys();
-    if (keyPressed && hud.message) {
-        hud.message = "";
+
+    currentState.update(delta);
+
+    var nextState = states[currentState.nextState];
+    if (nextState !== currentState) {
+        currentState = nextState;
+        if (currentState.init) {
+            currentState.init();
+        }
+
+        // always redraw on state changes
         canvas.redraw = true;
     }
-    movement.update(delta, onMoveComplete);
 };
+
 
 /**
  * @description     Renders the view
  */
 dungeon.render = function render() {
-
-    // render entire view here
-
-    //text.drawText('random number=' + Math.random(), 60, 60);
-    //text.drawCentered('You are walking around in a maze.', 10);
-
-    if (hud.message) {
-        text.drawCentered(hud.message, 10);
-    }
-
-    charDisplay.render({x: 5, y: 240 - 65, w: 310, h: 60});
-
+    hud.render();
     renderer.updateHud();
 };
-
-
-function onMoveComplete(moved) {
-
-    if (!moved) {
-        hud.message = "There is a wall there!";
-    }
-
-    canvas.redraw = true;
-}

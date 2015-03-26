@@ -56,6 +56,7 @@ loadFont();
  * Draws the glyph indicated by the code.
  * @param code
  * @returns {Number} The number of pixels to advance in the x-direction.
+ * @param color
  */
 function drawGlyph(code, color) {
     if (!textExport.loaded) return 0;
@@ -85,6 +86,7 @@ function drawGlyph(code, color) {
  * @param text
  * @param x
  * @param y
+ * @param color
  */
 function drawText(text, x, y, color) {
     x = Math.round(x);
@@ -101,12 +103,12 @@ function drawText(text, x, y, color) {
 }
 
 
-function drawCentered(text, y) {
+function drawCentered(text, y, color) {
     if (!textExport.loaded) return;
 
     var tw = textWidth(text);
     var x = Math.floor((config.width / 2) - (tw / 2));
-    drawText(text, x, y, 'red');
+    drawText(text, x, y, color || 'red');
 }
 
 

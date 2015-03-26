@@ -7,13 +7,14 @@
 'use strict';
 
 var viewRenderer = module.exports = {
-    'getElement': function () {
+    getElement: function () {
         return domElement;
     },
-    'initialize': initialize,
-    'initializeMap': initializeMap,
-    'render': render,
-    'update': update
+    initialize: initialize,
+    initializeMap: initializeMap,
+    render: render,
+    screenShake: screenShake,
+    update: update
 };
 
 
@@ -21,23 +22,31 @@ viewRenderer.updateHud = function updateHud() {
     cnvText.needsUpdate = true;
 };
 
+var constants = {
+    CAMERA_HEIGHT: -20
+};
 
 var atlas = require('./map/atlas'),
     canvas = require('./canvas'),
     config = require('./config'),
+    mapGeometry = require('./map/mapGeometry'),
     player = require('./player');
 
 
 var cnvText;
 
+var shake = {
+    duration: 0,
+    magnitude: 0
+};
 
-var mapGeometry = require('./map/mapGeometry');
-var hudMesh;
-var scene, hudScene;
-var camera, hudCam;
-var renderer;
-var domElement;
-var playerLight;
+
+var scene, hudScene,
+    camera, hudCam,
+    hudMesh,
+    renderer,
+    domElement,
+    playerLight;
 
 var tileSize = 200,
     WIDTH = config.width,
@@ -72,7 +81,7 @@ function initialize() {
     hudScene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(80, aspect, 1, 10000);
-    camera.position.y = -20;
+    camera.position.y = constants.CAMERA_HEIGHT;
 
     var width = wWidth;
     var height = wHeight;
@@ -102,8 +111,12 @@ function initialize() {
     domElement = renderer.domElement;
 }
 
+
 function initializeMap() {
+    clearScene();
+
     var geometry = mapGeometry.getMapGeometry(atlas.maps[0].data);
+
     var mesh = geometry.mesh;
     var floor = geometry.floor;
     scene.add(mesh);
@@ -119,13 +132,12 @@ function initializeMap() {
     playerLight.shadowCameraFov = 90;
     playerLight.shadowDarkness = 0.75; //XXX: Can change later...
     playerLight.intensity = 2.5;
-    //playerLight.exponent = 20;
     playerLight.angle = Math.PI / 2;
     playerLight.distance = 200 * 8;
 
-    //scene.add(playerLight);
-
     scene.add(camera);
+
+    // add the light to the camera, so it always points in the same direction
     camera.add(playerLight);
 
     renderer.render(scene, camera);
@@ -136,8 +148,20 @@ function initializeMap() {
 
 function update(delta) {
     camera.rotation.y = player.direction;
+
+    camera.position.y = constants.CAMERA_HEIGHT;
     camera.position.z = tileSize * player.position.y;   // z-coord: fwd/back
     camera.position.x = tileSize * player.position.x;   // x-coord: left/right
+
+    // screen shake
+    if (shake.duration > 0) {
+
+        camera.position.y += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
+        camera.position.x += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
+        camera.position.z += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
+
+        shake.duration--;
+    }
 }
 
 
@@ -145,4 +169,17 @@ function render() {
 
     renderer.render(scene, camera);
     renderer.render(hudScene, hudCam);
+}
+
+
+function screenShake(duration, magnitude) {
+    shake.magnitude = magnitude || 10;
+    shake.duration = duration;
+}
+
+
+function clearScene() {
+    for (var i = scene.children.length - 1; i >= 0; i--) {
+        scene.remove(scene.children[i]);
+    }
 }

@@ -54,6 +54,7 @@ function render() {
     renderer.render();
 
 
+    /*  only draw other stuff if we've updated the canvas */
     if (!canvas.redraw) return;
     canvas.clear();
 

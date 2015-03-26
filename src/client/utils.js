@@ -60,11 +60,17 @@ function extend() {
 }
 
 
+function randomBetween(min, max) {
+    return Math.round(Math.random() * (max - min)) + min;
+}
+
+
 module.exports = {
     clamp: clamp,
     distance: distance,
     extend: extend,
     isBetween: isBetween,
     isWithin: isWithin,
+    randomBetween: randomBetween,
     scaleRect: scaleRect
 };

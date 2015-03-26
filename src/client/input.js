@@ -12,9 +12,7 @@ module.exports = {
     //isMouseOver: isMouseOver,
 
     keyDown: isKeyDown,
-    handleKey: function (key, processed) {
-        processedKey[key] = processed;
-    },
+    handleKey: handleKey,
 
     //mousePos: mousePos,
     //mousePressed: mousePressed,
@@ -24,40 +22,47 @@ module.exports = {
 };
 
 
-var config = require('./config');
-var canvas = require('./canvas').element;
-var utils = require('./utils');
+var config = require('./config'),
+    element = require('./canvas').element,
+    utils = require('./utils');
 
 
 var KEYCODE = {
-    //UP: 38,
-    //DOWN: 40,
-    //LEFT: 37,
-    //RIGHT: 39,
+    // these are the arrow keys
+    ARROW_UP: 38,
+    ARROW_DOWN: 40,
+    ARROW_LEFT: 37,
+    ARROW_RIGHT: 39,
+
+    // these are WASD keys
     UP: 87,
     DOWN: 83,
     LEFT: 65,
     RIGHT: 68,
-    SPACE: 32
+    SPACE: 32,
+
+    ESC: 27,
+    ENTER: 13,
+    M: 77       // 'M' for mini-map
 };
-/*
 
- if (keyCode == 87) {
- camera.translateZ(-200);
- }
- if (keyCode == 68) {
- camera.rotation.y -= (Math.PI / 2);
- }
- if (keyCode == 83) {
- camera.translateZ(200);
- }
- if (keyCode == 65) {
- camera.rotation.y += (Math.PI / 2);
- }
 
- */
+var keyMappings = [
+    {key: 'up', code: KEYCODE.UP},
+    {key: 'down', code: KEYCODE.DOWN},
+    {key: 'left', code: KEYCODE.LEFT},
+    {key: 'right', code: KEYCODE.RIGHT},
+    {key: 'action', code: KEYCODE.SPACE},
+    {key: 'cancel', code: KEYCODE.ESC},
+    {key: 'confirm', code: KEYCODE.ENTER}
+];
 
 var mousePressed = {
+    left: false,
+    right: false
+};
+
+var preventInput = {
     left: false,
     right: false
 };
@@ -67,11 +72,6 @@ var keyDown = {
     right: false,
     up: false,
     down: false
-};
-
-var preventInput = {
-    left: false,
-    right: false
 };
 
 var processedKey = {
@@ -116,8 +116,8 @@ function clickCoord(evt) {
         canx = evt.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
         cany = evt.clientY + document.body.scrollTop + document.documentElement.scrollTop;
     }
-    canx -= canvas.offsetLeft;
-    cany -= canvas.offsetTop;
+    canx -= element.offsetLeft;
+    cany -= element.offsetTop;
 
     canx /= config.scale;
     cany /= config.scale;
@@ -141,54 +141,30 @@ function handleTouchEnd(evt) {
 
 
 function handleKeyDown(evt) {
-    function setKey(key) {
-        keyDown[key] = true;
-        evt.preventDefault();
-    }
+    var processed = false;
+    keyMappings.forEach(function (mapping) {
 
-    if (evt.keyCode == KEYCODE.UP) {
-        //keyDown.up = true;
-        setKey('up');
-    }
-    else if (evt.keyCode == KEYCODE.DOWN) {
-        //keyDown.down = true;
-        setKey('down');
-    }
-    else if (evt.keyCode == KEYCODE.LEFT) {
-        //keyDown.left = true;
-        setKey('left');
-    }
-    else if (evt.keyCode == KEYCODE.RIGHT) {
-        //keyDown.right = true;
-        setKey('right');
-    }
-    else if (evt.keyCode == KEYCODE.SPACE) {
-        keyDown.action = true;
-    }
+        if (!processed && evt.keyCode === mapping.code) {
+            keyDown[mapping.key] = true;
+            evt.preventDefault();
+
+            processed = true;
+        }
+    });
 }
 
 
 function handleKeyUp(evt) {
-    if (evt.keyCode == KEYCODE.UP) {
-        keyDown.up = false;
-        processedKey.up = false;
-    }
-    else if (evt.keyCode == KEYCODE.DOWN) {
-        keyDown.down = false;
-        processedKey.down = false;
-    }
-    else if (evt.keyCode == KEYCODE.LEFT) {
-        keyDown.left = false;
-        processedKey.left = false;
-    }
-    else if (evt.keyCode == KEYCODE.RIGHT) {
-        keyDown.right = false;
-        processedKey.right = false;
-    }
-    else if (evt.keyCode == KEYCODE.SPACE) {
-        keyDown.action = false;
-        processedKey.action = false;
-    }
+    var processed = false;
+    keyMappings.forEach(function (mapping) {
+
+        if (!processed && evt.keyCode === mapping.code) {
+            keyDown[mapping.key] = false;
+            processedKey[mapping.key] = false;
+
+            processed = true;
+        }
+    });
 }
 
 
@@ -241,8 +217,8 @@ function touchCoord(evt) {
     var canx = evt.touches[0].pageX;
     var cany = evt.touches[0].pageY;
 
-    canx -= canvas.offsetLeft;
-    cany -= canvas.offsetTop;
+    canx -= element.offsetLeft;
+    cany -= element.offsetTop;
 
     canx /= config.scale;
     cany /= config.scale;
@@ -250,14 +226,17 @@ function touchCoord(evt) {
     return {x: canx, y: cany};
 }
 
+function handleKey(key, processed) {
+    processedKey[key] = processed;
+}
 
 function isMouseOver(rect) {
     if (!rect) return false;
     return utils.isWithin(mousePos, rect);
 }
 
-function isKeyDown(key) {
-    return keyDown[key];
+function isKeyDown(key, processed) {
+    return keyDown[key] && (!processed || !isKeyHandled(key));
 }
 
 function isKeyHandled(key) {

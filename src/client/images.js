@@ -4,6 +4,9 @@
 
 'use strict';
 
+var imageExports = module.exports = {};
+
+
 var canvas = require('./canvas');
 var ctx = canvas.context;
 
@@ -18,7 +21,7 @@ images.wallTexture = loadImage('walltexture');
 images.floorTexture = loadImage('floortexture');
 
 //images.title = loadImage('title');
-//
+
 images.borderUL = loadImage('textborder', {x: 0, y: 0, w: 16, h: 16});
 images.borderU = loadImage('textborder', {x: 16, y: 0, w: 16, h: 16});
 images.borderUR = loadImage('textborder', {x: 32, y: 0, w: 16, h: 16});
@@ -28,48 +31,33 @@ images.borderR = loadImage('textborder', {x: 32, y: 16, w: 16, h: 16});
 images.borderBL = loadImage('textborder', {x: 0, y: 32, w: 16, h: 16});
 images.borderB = loadImage('textborder', {x: 16, y: 32, w: 16, h: 16});
 images.borderBR = loadImage('textborder', {x: 32, y: 32, w: 16, h: 16});
-//
+
 //images.room = loadImage('mapTiles', {x: 16, y: 0, w: 16, h: 16});
 //images.visitedroom = loadImage('mapTiles', {x: 0, y: 0, w: 16, h: 16});
 //images.currentPos = loadImage('mapTiles', {x: 22, y: 22, w: 4, h: 4});
-//
 //images.hCorridor = loadImage('mapTiles', {x: 32, y: 6, w: 4, h: 4});    // real width=16
 //images.vCorridor = loadImage('mapTiles', {x: 6, y: 16, w: 4, h: 4});    // real height=16
-//
 //images.stairsUp = loadImage('mapTiles', {x: 32, y: 16, w: 16, h: 16});
-//
+
 images.skull = loadImage('skull', {x: 0, y: 0, w: 50, h: 50});
-//
-//
-//images.tilesets = {};   // indexed by distance from player, 0=closest (tiles1), 4=furthest (tiles5)
-//images.tilesets.dungeon = [
-//    {
-//        l: loadImage('tiles1', {x: 0, y: 0, w: 25, h: 140}),
-//        r: loadImage('tiles1', {x: 175, y: 0, w: 25, h: 140}),
-//        floor: loadImage('floors', {x: 0, y: 53, w: 200, h: 17}),
-//        wall_l: loadImage('tiles1', {x: 175, y: 17, w: 25, h: 106}),
-//        wall_r: loadImage('tiles1', {x: 0, y: 17, w: 25, h: 106}),     // fix this, create actual wall graphics
-//        wall: loadImage('tiles1', {x: 25, y: 17, w: 150, h: 106})
-//    }
-//];
 
 
 // get total number of images to make sure we've loaded everything
 totalImages = Object.keys(images).length;
 if (checkLoadComplete()) loaded = true;
 
-module.exports = {
-    drawBorder: drawBorder,
-    drawImage: drawImage,
-    getBorder: getBorder,
-    images: images,
-    isLoaded: function () {
-        return loaded;
-    },
-    loadPct: function () {
-        return loadedImages / totalImages;
-    }
+
+imageExports.drawBorder = drawBorder;
+imageExports.drawImage = drawImage;
+imageExports.getBorder = getBorder;
+imageExports.images = images;
+imageExports.isLoaded = function isLoaded() {
+    return loaded;
 };
+imageExports.loadPct = function loadPct() {
+    return loadedImages / totalImages;
+};
+
 
 ////////////////////////////////////////
 
