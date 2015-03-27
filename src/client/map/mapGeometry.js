@@ -5,30 +5,10 @@
 'use strict';
 
 module.exports = {
-    getMapGeometry: getMapGeometry,
-    loadTextures: loadTextures
+    getMapGeometry: getMapGeometry
 };
 
-
-var textureCount = 0;
-var textures = {
-    wall: THREE.ImageUtils.loadTexture('/images/walltexture.png', {}, function () {
-        textureCount++;
-    }),
-    floor: THREE.ImageUtils.loadTexture('/images/floortexture.png', {}, function () {
-        textureCount++;
-    })
-};
-
-
-/**
- * Allows preloading of all textures before we start rendering anything
- * @returns {boolean} True when all textures have been loaded.
- */
-function loadTextures() {
-    return (textureCount === Object.keys(textures).length);
-}
-
+var textures = require('../textures');
 
 /**
  * Returns two meshes for the map itself and the floor
@@ -68,7 +48,7 @@ function getFloor(map) {
     var height = map.length;
     var cellSize = 200;
 
-    var texture = textures.floor;
+    var texture = textures.getTexture('floor');
     texture.minFilter = THREE.NearestFilter;
     texture.magFilter = THREE.NearestFilter;
 
@@ -93,7 +73,7 @@ function getFloor(map) {
 
 function getMapMesh(map) {
     var geometry, material, mesh;
-    var img = textures.wall;
+    var img = textures.getTexture('wall');
     img.minFilter = THREE.NearestFilter;
     img.magFilter = THREE.NearestFilter;
 

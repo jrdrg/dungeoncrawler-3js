@@ -7,6 +7,13 @@
 'use strict';
 
 var viewRenderer = module.exports = {
+    getDimensions: function () {
+        return {
+            width: wWidth,
+            height: wHeight,
+            aspect: aspect
+        };
+    },
     getElement: function () {
         return domElement;
     },
@@ -14,7 +21,9 @@ var viewRenderer = module.exports = {
     initializeMap: initializeMap,
     render: render,
     screenShake: screenShake,
-    update: update
+    update: update,
+
+    getNewObject: createNewPlane
 };
 
 
@@ -23,7 +32,9 @@ viewRenderer.updateHud = function updateHud() {
 };
 
 var constants = {
-    CAMERA_HEIGHT: -20
+    CAMERA_HEIGHT: -20,
+    FLOOR_HEIGHT: -100,
+    MAP_HEIGHT: 0
 };
 
 var atlas = require('./map/atlas'),
@@ -40,6 +51,7 @@ var shake = {
     magnitude: 0
 };
 
+var scale, wWidth, wHeight, aspect;
 
 var scene, hudScene,
     camera, hudCam,
@@ -48,6 +60,8 @@ var scene, hudScene,
     domElement,
     playerLight;
 
+var mesh, floor;
+
 var tileSize = 200,
     WIDTH = config.width,
     HEIGHT = config.height;
@@ -55,21 +69,10 @@ var tileSize = 200,
 
 function initialize() {
 
-    var scale = Math.floor(window.innerHeight / HEIGHT);    // scale to the available vertical space
-
-    var wWidth = WIDTH * scale,
-        wHeight = HEIGHT * scale,
-        aspect = wWidth / wHeight;
-
-    var context = canvas.context;
-
-    context.fillStyle = 'rgb(100,50,150)';
-    context.fillStyle = 'rgb(50, 50, 75)';
-    //context.fillRect(5, 180, 310, 60);
-
-    context.fillStyle = 'rgb(250, 50, 200)';
-    context.fillRect(3, 80, 1, 5);
-
+    scale = Math.floor(window.innerHeight / HEIGHT);    // scale to the available vertical space
+    wWidth = WIDTH * scale;
+    wHeight = HEIGHT * scale;
+    aspect = wWidth / wHeight;
 
     cnvText = new THREE.Texture(canvas.element);
     cnvText.needsUpdate = true;
@@ -80,7 +83,7 @@ function initialize() {
     scene = new THREE.Scene();
     hudScene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(80, aspect, 1, 10000);
+    camera = new THREE.PerspectiveCamera(90, aspect, 1, 10000);
     camera.position.y = constants.CAMERA_HEIGHT;
 
     var width = wWidth;
@@ -109,18 +112,6 @@ function initialize() {
     renderer.autoClear = false;
 
     domElement = renderer.domElement;
-}
-
-
-function initializeMap() {
-    clearScene();
-
-    var geometry = mapGeometry.getMapGeometry(atlas.maps[0].data);
-
-    var mesh = geometry.mesh;
-    var floor = geometry.floor;
-    scene.add(mesh);
-    scene.add(floor);
 
 
     playerLight = new THREE.PointLight(0xaaaaaa);
@@ -140,6 +131,22 @@ function initializeMap() {
     // add the light to the camera, so it always points in the same direction
     camera.add(playerLight);
 
+}
+
+
+function initializeMap() {
+    clearScene();
+
+    var geometry = mapGeometry.getMapGeometry(atlas.maps[0].data);
+
+    mesh = geometry.mesh;
+    floor = geometry.floor;
+
+    scene.add(mesh);
+    scene.add(floor);
+
+    mesh.position.y = 0;
+
     renderer.render(scene, camera);
     renderer.render(hudScene, hudCam);
 
@@ -153,12 +160,24 @@ function update(delta) {
     camera.position.z = tileSize * player.position.y;   // z-coord: fwd/back
     camera.position.x = tileSize * player.position.x;   // x-coord: left/right
 
+    if (mesh) {
+        mesh.position.y = constants.MAP_HEIGHT;
+    }
+
     // screen shake
     if (shake.duration > 0) {
 
         camera.position.y += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
         camera.position.x += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
         camera.position.z += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
+
+        //if (mesh && floor) {
+        //    var yAmt = (Math.random() * shake.magnitude) - (shake.magnitude / 2);
+        //    mesh.position.y += yAmt;
+        //    floor.position.y += yAmt;
+        //    //camera.position.x += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
+        //    //camera.position.z += (Math.random() * shake.magnitude) - (shake.magnitude / 2);
+        //}
 
         shake.duration--;
     }
@@ -172,14 +191,72 @@ function render() {
 }
 
 
+function clearScene() {
+    // remove everything but the camera/light, since it was added as the first child
+    for (var i = scene.children.length - 1; i > 0; i--) {
+        scene.remove(scene.children[i]);
+    }
+}
+
+
 function screenShake(duration, magnitude) {
     shake.magnitude = magnitude || 10;
     shake.duration = duration;
 }
 
 
-function clearScene() {
-    for (var i = scene.children.length - 1; i >= 0; i--) {
-        scene.remove(scene.children[i]);
+function createNewPlane() {
+    function PlaneObject() {
+        var width = config.width;
+        var height = config.height;
+        var cellSize = 200;
+
+        var cnv = document.createElement('canvas');
+        cnv.width = width;
+        cnv.height = height;
+
+        this.context = cnv.getContext("2d");
+        this.dispose = function () {
+            scene.remove(plane);
+            plane.geometry.dispose();
+            plane.material.dispose();
+        };
+        this.needsUpdate = function () {
+            cText.needsUpdate = true;
+        };
+
+
+        var cText = new THREE.Texture(cnv);
+        cText.needsUpdate = true;
+        cText.minFilter = THREE.NearestFilter;
+        cText.magFilter = THREE.NearestFilter;
+
+
+        var texture = require('./textures').getTexture('floor');
+        texture.minFilter = THREE.NearestFilter;
+        texture.magFilter = THREE.NearestFilter;
+
+        texture.needsUpdate = true;
+
+        //var material = new THREE.MeshLambertMaterial({map: texture, doubleSided: true, side: THREE.DoubleSide});
+        var material = new THREE.MeshBasicMaterial({
+            map: cText, doubleSided: true, side: THREE.DoubleSide, color: 0xffffff,
+            transparent: true
+        });
+        var geometryPlane = new THREE.PlaneBufferGeometry(width, height);
+        var plane = new THREE.Mesh(geometryPlane, material);
+
+        // makes it face the same direction as the player
+        var vect = require('./utils').directionToVector(player.direction);
+
+        plane.rotation.y = player.direction;
+        plane.position.y = 0;    // center is at 0, height is 200
+        plane.position.x = (player.position.x * cellSize) + (-vect.x * cellSize / 2);
+        plane.position.z = (player.position.y * cellSize) + (-vect.y * cellSize / 2);
+
+        scene.add(plane);
+
     }
+
+    return new PlaneObject();
 }

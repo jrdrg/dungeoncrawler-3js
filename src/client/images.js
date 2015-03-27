@@ -91,8 +91,8 @@ function drawBorder(rect) {
     drawImage('borderM', rect.x, rect.y, rect.w, rect.h);
     drawImage('borderU', rect.x, rect.y, rect.w, borderSize);
     drawImage('borderL', rect.x, rect.y, borderSize, rect.h);
-    drawImage('borderR', rect.w - borderSize, rect.y, borderSize, rect.h);
-    drawImage('borderB', rect.x, rect.h - borderSize, rect.w, borderSize);
+    drawImage('borderR', rightCol, rect.y, borderSize, rect.h);
+    drawImage('borderB', rect.x, bottomRow, rect.w, borderSize);
 
     drawImage('borderUL', x, y);
     drawImage('borderUR', rightCol, y);

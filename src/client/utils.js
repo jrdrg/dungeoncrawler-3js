@@ -65,8 +65,18 @@ function randomBetween(min, max) {
 }
 
 
+function directionToVector(direction) {
+    var vect = {
+        x: Math.round(Math.sin(direction % (2 * Math.PI))),
+        y: Math.round(Math.cos(direction % (2 * Math.PI)))
+    };
+    return vect;
+}
+
+
 module.exports = {
     clamp: clamp,
+    directionToVector: directionToVector,
     distance: distance,
     extend: extend,
     isBetween: isBetween,

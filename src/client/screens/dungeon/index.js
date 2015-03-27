@@ -48,6 +48,9 @@ dungeon.update = function update(delta) {
  * @description     Renders the view
  */
 dungeon.render = function render() {
+
+    currentState.render();
+
     hud.render();
     renderer.updateHud();
 };
