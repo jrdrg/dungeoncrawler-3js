@@ -25,10 +25,10 @@ var party = [
 
 
 var widths = {
-    name: 100,
+    name: 80,
     class: 70,
     level: 35,
-    hp: 40
+    hp: 60
 };
 
 
@@ -38,7 +38,7 @@ function update(delta) {
 
 
 function render(rect) {
-    var margin = 7;
+    var margin = 0;
 
     var x = rect.x + margin;
     var y = rect.y + margin;
@@ -46,13 +46,14 @@ function render(rect) {
     text.drawText('Name', x, y, 'green');
     x += widths.name;
 
+    text.drawText('HP', x, y, 'green');
+    x += widths.hp;
+
     text.drawText('Class', x, y, 'green');
     x += widths.class;
 
     text.drawText('Level', x, y, 'green');
     x += widths.level;
-
-    text.drawText('HP', x, y, 'green');
 
     y += 12;
     for (var i = 0; i < party.length; i++) {
@@ -68,13 +69,15 @@ function drawCharacter(character, x, y) {
     text.drawText(character.name, x, y);
     x += widths.name;
 
+    text.drawText(character.hp + '/' + character.maxHp, x, y);
+    x += widths.hp;
+
     text.drawText(character.className, x, y);
     x += widths.class;
 
     text.drawText(character.level + '', x, y);
     x += widths.level;
 
-    text.drawText(character.hp + '/' + character.maxHp, x, y);
 }
 
 

@@ -5,29 +5,30 @@
 
 'use strict';
 
-function isWithin(point, rect) {
-    var x = isBetween(point.x, rect.x, rect.x + rect.w);
-    var y = isBetween(point.y, rect.y, rect.y + rect.h);
-    return x && y;
 
-}
+module.exports = {
+    clamp: clamp,
+    directionToVector: directionToVector,
+    distance: distance,
+    extend: extend,
+    isBetween: isBetween,
+    isWithin: isWithin,
+    randomBetween: randomBetween,
+    scaleRect: scaleRect
+};
+
 
 function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
 
-function isBetween(value, min, max) {
-    return value >= min && value < max;
-}
 
-function scaleRect(rect, scale) {
-    //return {
-    //    x: (rect.x * scale),
-    //    y: (rect.y * scale),
-    //    w: Math.floor(rect.w * scale),
-    //    h: (rect.h * scale)
-    //};
-    return rect;
+function directionToVector(direction) {
+    var vect = {
+        x: Math.round(Math.sin(direction % (2 * Math.PI))),
+        y: Math.round(Math.cos(direction % (2 * Math.PI)))
+    };
+    return vect;
 }
 
 
@@ -60,27 +61,30 @@ function extend() {
 }
 
 
+function isBetween(value, min, max) {
+    return value >= min && value < max;
+}
+
+
+function isWithin(point, rect) {
+    var x = isBetween(point.x, rect.x, rect.x + rect.w);
+    var y = isBetween(point.y, rect.y, rect.y + rect.h);
+    return x && y;
+
+}
+
+
+function scaleRect(rect, scale) {
+    return {
+        x: (rect.x * scale),
+        y: (rect.y * scale),
+        w: Math.floor(rect.w * scale),
+        h: (rect.h * scale)
+    };
+}
+
+
 function randomBetween(min, max) {
     return Math.round(Math.random() * (max - min)) + min;
 }
 
-
-function directionToVector(direction) {
-    var vect = {
-        x: Math.round(Math.sin(direction % (2 * Math.PI))),
-        y: Math.round(Math.cos(direction % (2 * Math.PI)))
-    };
-    return vect;
-}
-
-
-module.exports = {
-    clamp: clamp,
-    directionToVector: directionToVector,
-    distance: distance,
-    extend: extend,
-    isBetween: isBetween,
-    isWithin: isWithin,
-    randomBetween: randomBetween,
-    scaleRect: scaleRect
-};

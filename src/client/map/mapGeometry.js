@@ -18,7 +18,8 @@ var textures = require('../textures');
 function getMapGeometry(map) {
     return {
         mesh: getMapMesh(map),
-        floor: getFloor(map)
+        floor: getFloor(map),
+        ceiling: getCeiling(map)
     };
 }
 
@@ -42,6 +43,11 @@ function transZ(geo, n) {
 }
 
 
+/**
+ * Returns a mesh representing the floor of the current level.
+ * @param map
+ * @returns {THREE.Mesh}
+ */
 function getFloor(map) {
 
     var width = map[0].length;
@@ -71,6 +77,39 @@ function getFloor(map) {
 }
 
 
+function getCeiling(map) {
+    var width = map[0].length;
+    var height = map.length;
+    var cellSize = 200;
+
+    var texture = textures.getTexture('floor');
+    texture.minFilter = THREE.NearestFilter;
+    texture.magFilter = THREE.NearestFilter;
+
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    texture.repeat.set(width * 1, height * 1);
+    texture.needsUpdate = true;
+
+    var material = new THREE.MeshPhongMaterial({map: texture, doubleSided: true, side: THREE.DoubleSide});
+    var geometryPlane = new THREE.PlaneBufferGeometry(width * 1 * cellSize, height * 1 * cellSize);
+    var plane = new THREE.Mesh(geometryPlane, material);
+
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = 100;    // center is at 0, height is 200
+    plane.position.x = (width / 2) * cellSize;
+    plane.position.z = (height / 2) * cellSize;
+
+    return plane;
+}
+
+
+/**
+ * Returns a mesh representing the maze geometry of the current level.
+ * @param map
+ * @returns {THREE.Mesh}
+ */
 function getMapMesh(map) {
     var geometry, material, mesh;
     var img = textures.getTexture('wall');

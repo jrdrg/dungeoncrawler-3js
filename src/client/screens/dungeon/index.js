@@ -32,6 +32,7 @@ dungeon.update = function update(delta) {
     currentState.update(delta);
 
     var nextState = states[currentState.nextState];
+
     if (nextState !== currentState) {
         currentState = nextState;
         if (currentState.init) {
@@ -49,8 +50,8 @@ dungeon.update = function update(delta) {
  */
 dungeon.render = function render() {
 
+    hud.render();
     currentState.render();
 
-    hud.render();
     renderer.updateHud();
 };

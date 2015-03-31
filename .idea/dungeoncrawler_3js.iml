@@ -5,5 +5,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="three.js" level="project" />
+    <orderEntry type="library" name="dungeoncrawler_3js node_modules" level="project" />
   </component>
 </module>

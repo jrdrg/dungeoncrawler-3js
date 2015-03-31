@@ -32,7 +32,7 @@ viewRenderer.updateHud = function updateHud() {
 };
 
 var constants = {
-    CAMERA_HEIGHT: -20,
+    CAMERA_HEIGHT: -40,
     FLOOR_HEIGHT: -100,
     MAP_HEIGHT: 0
 };
@@ -41,7 +41,8 @@ var atlas = require('./map/atlas'),
     canvas = require('./canvas'),
     config = require('./config'),
     mapGeometry = require('./map/mapGeometry'),
-    player = require('./player');
+    player = require('./player'),
+    utils = require('./utils');
 
 
 var cnvText;
@@ -60,7 +61,7 @@ var scene, hudScene,
     domElement,
     playerLight;
 
-var mesh, floor;
+var mesh, floor, ceiling;
 
 var tileSize = 200,
     WIDTH = config.width,
@@ -83,7 +84,7 @@ function initialize() {
     scene = new THREE.Scene();
     hudScene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(90, aspect, 1, 10000);
+    camera = new THREE.PerspectiveCamera(70, aspect, 1, 10000);
     camera.position.y = constants.CAMERA_HEIGHT;
 
     var width = wWidth;
@@ -141,9 +142,11 @@ function initializeMap() {
 
     mesh = geometry.mesh;
     floor = geometry.floor;
+    ceiling = geometry.ceiling;
 
     scene.add(mesh);
     scene.add(floor);
+    scene.add(ceiling);
 
     mesh.position.y = 0;
 

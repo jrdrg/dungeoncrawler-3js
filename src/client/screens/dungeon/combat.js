@@ -9,18 +9,16 @@
 var combat = module.exports = {
     nextState: 'BATTLE',
     update: update,
-    render: render
+    render: render,
+    endBattle: endBattle
 };
 
 combat.init = function initialize() {
     console.log("New battle!");
     sounds.playSound('START_BATTLE');
-    currentBattle = new Battle();
+    currentBattle = new Battle(combat);
 
     combat.nextState = 'BATTLE';
-
-
-    //plane = renderer.getNewObject();
 };
 
 combat.getBattle = function getBattle() {
@@ -29,10 +27,9 @@ combat.getBattle = function getBattle() {
 
 
 var
-    activeMap = require('../../activeMap'),
+    Battle = require('./Battle'),
     canvas = require('../../canvas'),
     config = require('../../config'),
-    Enemy = require('./Enemy'),
     hud = require('../../hud'),
     images = require('../../images'),
     input = require('../../input'),
@@ -42,80 +39,9 @@ var
     utils = require('../../utils')
     ;
 
-var plane;
 var dims = {
     width: config.width,
     height: config.height
-};
-
-var rowPositionsX = [
-    [
-        [80],
-        [90, 150],
-        [70, 140, 210],
-        [60, 110, 160, 210]
-    ],
-    [
-        [130],
-        [90, 150],
-        [70, 140, 210],
-        [60, 110, 160, 210]
-    ]
-];
-
-var rowPositionsY = [80, 70, 65];
-
-/**
- * Represents the current battle. A new one gets created and assigned to currentBattle each time combat.init() is called
- * @constructor
- */
-function Battle() {
-    var map = activeMap.getCurrentMap();
-
-    this.enemies = initializeEnemies();
-
-
-    function initializeEnemies() {
-        var enemies = [];
-        var numRows = utils.randomBetween(1, 2);
-        for (var r = 0; r < numRows; r++) {
-            var numEnemies = utils.randomBetween(1, 4);
-            var row = [];
-            var xPos = rowPositionsX[r][numEnemies - 1];
-
-            for (var e = 0; e < numEnemies; e++) {
-                var x = xPos[e];
-                var y = rowPositionsY[r];
-
-                var enemy = new Enemy({image: 'skull'}, x, y);
-                row.push(enemy);
-            }
-            enemies.push(row);
-        }
-        return enemies;
-    }
-}
-
-Battle.prototype.update = function (delta) {
-    for (var i = this.enemies.length - 1; i >= 0; i--) {
-        for (var j = 0; j < this.enemies[i].length; j++) {
-            var enemy = this.enemies[i][j];
-            if (enemy.isAlive) {
-                enemy.update(delta);
-            }
-        }
-    }
-};
-
-Battle.prototype.render = function () {
-    for (var i = this.enemies.length - 1; i >= 0; i--) {
-        for (var j = 0; j < this.enemies[i].length; j++) {
-            var enemy = this.enemies[i][j];
-            if (enemy.isAlive) {
-                enemy.draw(i);
-            }
-        }
-    }
 };
 
 
@@ -135,15 +61,9 @@ function update(delta) {
 
 function render() {
 
-    //var img = images.images.skull;
-    //var ctx = plane.context;
-    //ctx.drawImage(img, 60, 50);
-    //plane.needsUpdate();
-
-
     // dim the background
     var ctx = canvas.context;
-    ctx.globalAlpha = 0.3;
+    ctx.globalAlpha = 0.2;
     ctx.fillStyle = 'rgb(30,30,40)';
     ctx.fillRect(0, 0, 320, 240);
     ctx.globalAlpha = 1;
@@ -171,7 +91,11 @@ function processKeys() {
 
     } else if (input.keyDown('cancel', true)) {
 
-        //plane.dispose();
-        combat.nextState = 'EXPLORE';
     }
+}
+
+
+function endBattle() {
+    if (currentBattle) currentBattle.dispose();
+    combat.nextState = 'EXPLORE';
 }

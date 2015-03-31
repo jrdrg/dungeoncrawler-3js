@@ -39,6 +39,8 @@ images.borderBR = loadImage('textborder', {x: 32, y: 32, w: 16, h: 16});
 //images.vCorridor = loadImage('mapTiles', {x: 6, y: 16, w: 4, h: 4});    // real height=16
 //images.stairsUp = loadImage('mapTiles', {x: 32, y: 16, w: 16, h: 16});
 
+images.selectionArrow = loadImage('selectionarrow', {x: 0, y: 0, w: 3, h: 6});
+images.moreArrow = loadImage('more_arrow', {x:1, y:0, w:5, h: 3});
 images.skull = loadImage('skull', {x: 0, y: 0, w: 50, h: 50});
 
 
@@ -57,7 +59,7 @@ imageExports.isLoaded = function isLoaded() {
 imageExports.loadPct = function loadPct() {
     return loadedImages / totalImages;
 };
-
+imageExports.withContext = withContext;
 
 ////////////////////////////////////////
 
@@ -127,10 +129,12 @@ function getBorder(rect) {
     var context = cnv.getContext("2d");
 
     // switch the context around and draw to the new canvas, then switch it back
-    ctx = context;
     var r2 = {x: 0, y: 0, w: rect.w, h: rect.h};
-    drawBorder(r2);
-    ctx = canvas.context;
+    withContext(context, function () {
+        drawBorder(r2);
+    });
+    //setContext(context);
+    //setContext(canvas.context);
     return cnv;
 }
 
@@ -149,3 +153,13 @@ function loadImage(image, src) {
 }
 
 
+function withContext(context, action) {
+    setContext(context);
+    action();
+    setContext(canvas.context);
+}
+
+
+function setContext(context) {
+    ctx = context;
+}

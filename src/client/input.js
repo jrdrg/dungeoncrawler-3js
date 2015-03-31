@@ -54,7 +54,14 @@ var keyMappings = [
     {key: 'right', code: KEYCODE.RIGHT},
     {key: 'action', code: KEYCODE.SPACE},
     {key: 'cancel', code: KEYCODE.ESC},
-    {key: 'confirm', code: KEYCODE.ENTER}
+    {key: 'confirm', code: KEYCODE.ENTER},
+
+    {key: 'a_up', code: KEYCODE.ARROW_UP},
+    {key: 'a_down', code: KEYCODE.ARROW_DOWN},
+    {key: 'a_left', code: KEYCODE.ARROW_LEFT},
+    {key: 'a_right', code: KEYCODE.ARROW_RIGHT},
+
+    {key: 'map', code: KEYCODE.M}
 ];
 
 var mousePressed = {

@@ -9,9 +9,10 @@ var hud = module.exports = {};
 var characterDisplay = require('./characterDisplay');
 var canvas = require('../canvas'),
     images = require('../images'),
+    input = require('../input'),
     text = require('../text');
 
-
+hud.drawMore = drawMore;
 hud.message = '';
 hud.render = render;
 hud.setMessage = setMessage;
@@ -28,7 +29,7 @@ function render() {
         text.drawCentered(hud.message, 10, messageColor);
     }
 
-    characterDisplay.render({x: 5, y: 240 - 65, w: 310, h: 60});
+    characterDisplay.render({x: 30, y: 240 - 65, w: 310, h: 60});
 }
 
 
@@ -37,4 +38,9 @@ function setMessage(message, color) {
     canvas.redraw = true;
 
     messageColor = color || 'green';
+}
+
+
+function drawMore(x) {
+    images.drawImage('moreArrow', x, 14);
 }

@@ -6,14 +6,10 @@
 
 
 var explore = module.exports = {};
+explore.init = init;
 explore.nextState = 'EXPLORE';
 explore.render = render;
 explore.update = update;
-
-explore.init = function init() {
-    hud.setMessage('');
-    explore.nextState = 'EXPLORE';
-};
 
 
 var activeMap = require('../../activeMap'),
@@ -29,6 +25,12 @@ var keyHandlers = [
 ];
 
 var encounterChance = 0;
+
+
+function init() {
+    hud.setMessage('');
+    explore.nextState = 'EXPLORE';
+}
 
 function update(delta) {
     var keyPressed = false,
@@ -71,11 +73,13 @@ function onMoveComplete(moved) {
     } else {
         // check for random battles, events on the tile, etc
         var currentMap = activeMap.getCurrentMap();
+
         encounterChance += currentMap.encounterIncrement;
         encounterChance = Math.min(encounterChance, currentMap.maxEncounterChance);
 
         if (Math.random() < encounterChance) {
-            hud.setMessage("Battle! pct=" + encounterChance);
+            hud.setMessage('Something approaches!');
+            console.log("Battle! pct=" + encounterChance);
 
             // enter battle!
             encounterChance = 0;
