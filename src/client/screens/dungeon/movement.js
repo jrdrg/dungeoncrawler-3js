@@ -137,7 +137,7 @@ function update(delta, moveCompleteCallback) {
 
         case player.states.TURNING:
 
-            player.direction -= (delta * (turnTo.dir) * 3);
+            player.direction -= (delta * (turnTo.dir) * 4);
             player.direction = player.direction % (Math.PI * 2);
 
             if (reachedDestination(turnTo.from, turnTo.to, player.direction)) {
@@ -154,8 +154,8 @@ function update(delta, moveCompleteCallback) {
 
         case player.states.MOVING:
 
-            player.position.x += (delta * 2 * walkTo.dir.x);
-            player.position.y += (delta * 2 * walkTo.dir.y);
+            player.position.x += (delta * 3 * walkTo.dir.x);
+            player.position.y += (delta * 3 * walkTo.dir.y);
 
             var reachedX = reachedDestination(walkTo.from.x, walkTo.to.x, player.position.x);
             var reachedY = reachedDestination(walkTo.from.y, walkTo.to.y, player.position.y);

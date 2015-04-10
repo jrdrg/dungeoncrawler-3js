@@ -34,7 +34,7 @@ window.onload = function () {
     }
 
     renderer.initialize();
-    document.body.appendChild(renderer.getElement());
+    document.getElementById('game').appendChild(renderer.getElement());
 
     if (window.addEventListener) {
         //window.addEventListener('resize', canvas.resizeCanvas, false);

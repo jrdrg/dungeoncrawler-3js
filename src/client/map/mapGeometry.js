@@ -4,9 +4,14 @@
 
 'use strict';
 
+var CELL_SIZE = 200;
+
+
 module.exports = {
+    cellSize: CELL_SIZE,
     getMapGeometry: getMapGeometry
 };
+
 
 var textures = require('../textures');
 
@@ -52,7 +57,7 @@ function getFloor(map) {
 
     var width = map[0].length;
     var height = map.length;
-    var cellSize = 200;
+    var cellSize = CELL_SIZE;
 
     var texture = textures.getTexture('floor');
     texture.minFilter = THREE.NearestFilter;
@@ -80,7 +85,7 @@ function getFloor(map) {
 function getCeiling(map) {
     var width = map[0].length;
     var height = map.length;
-    var cellSize = 200;
+    var cellSize = CELL_SIZE;
 
     var texture = textures.getTexture('floor');
     texture.minFilter = THREE.NearestFilter;
@@ -116,7 +121,7 @@ function getMapMesh(map) {
     img.minFilter = THREE.NearestFilter;
     img.magFilter = THREE.NearestFilter;
 
-    geometry = new THREE.BoxGeometry(200, 200, 200);
+    geometry = new THREE.BoxGeometry(CELL_SIZE, CELL_SIZE, CELL_SIZE);
     material = new THREE.MeshLambertMaterial({color: 0xaabbaa, wireframe: false, map: img});
 
     var height = map.length;
@@ -126,9 +131,9 @@ function getMapMesh(map) {
         for (var i = 0; i < width; i++) {
 
             if (map[j][i] === 1) {
-                var tmp = new THREE.BoxGeometry(200, 200, 200);
-                transX(tmp, i * 200);
-                transZ(tmp, j * 200);
+                var tmp = new THREE.BoxGeometry(CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                transX(tmp, i * CELL_SIZE);
+                transZ(tmp, j * CELL_SIZE);
 
                 geometry.merge(tmp);
             }

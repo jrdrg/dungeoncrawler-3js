@@ -32,7 +32,7 @@ viewRenderer.updateHud = function updateHud() {
 };
 
 var constants = {
-    CAMERA_HEIGHT: -40,
+    CAMERA_HEIGHT: -10, //-40
     FLOOR_HEIGHT: -100,
     MAP_HEIGHT: 0
 };
@@ -44,6 +44,8 @@ var atlas = require('./map/atlas'),
     player = require('./player'),
     utils = require('./utils');
 
+
+var CELL_SIZE = mapGeometry.cellSize;
 
 var cnvText;
 
@@ -63,7 +65,7 @@ var scene, hudScene,
 
 var mesh, floor, ceiling;
 
-var tileSize = 200,
+var tileSize = CELL_SIZE,
     WIDTH = config.width,
     HEIGHT = config.height;
 
@@ -84,7 +86,8 @@ function initialize() {
     scene = new THREE.Scene();
     hudScene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(70, aspect, 1, 10000);
+    //camera = new THREE.PerspectiveCamera(75, aspect, 1, 10000);
+    camera = new THREE.PerspectiveCamera(90, aspect, 1, 10000);
     camera.position.y = constants.CAMERA_HEIGHT;
 
     var width = wWidth;
@@ -125,7 +128,7 @@ function initialize() {
     playerLight.shadowDarkness = 0.75; //XXX: Can change later...
     playerLight.intensity = 2.5;
     playerLight.angle = Math.PI / 2;
-    playerLight.distance = 200 * 8;
+    playerLight.distance = tileSize * 8;
 
     scene.add(camera);
 
@@ -212,7 +215,7 @@ function createNewPlane() {
     function PlaneObject() {
         var width = config.width;
         var height = config.height;
-        var cellSize = 200;
+        var cellSize = CELL_SIZE;
 
         var cnv = document.createElement('canvas');
         cnv.width = width;

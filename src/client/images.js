@@ -19,6 +19,7 @@ var images = {};
 
 images.wallTexture = loadImage('walltexture');
 images.floorTexture = loadImage('floortexture');
+images.woodWallTexture = loadImage('wood_walltexture');
 
 //images.title = loadImage('title');
 

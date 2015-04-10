@@ -16,7 +16,8 @@ module.exports = {
 var textureCount = 0;
 var textures = {
     wall: THREE.ImageUtils.loadTexture('/images/walltexture.png', {}, onLoad),
-    floor: THREE.ImageUtils.loadTexture('/images/floortexture.png', {}, onLoad)
+    floor: THREE.ImageUtils.loadTexture('/images/floortexture.png', {}, onLoad),
+    woodWall: THREE.ImageUtils.loadTexture('/images/wood_walltexture.png', {}, onLoad)
 };
 
 
