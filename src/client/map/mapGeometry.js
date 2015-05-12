@@ -4,7 +4,7 @@
 
 'use strict';
 
-var CELL_SIZE = 200;
+var CELL_SIZE = 400;
 
 
 module.exports = {

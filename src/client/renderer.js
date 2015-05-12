@@ -86,8 +86,8 @@ function initialize() {
     scene = new THREE.Scene();
     hudScene = new THREE.Scene();
 
-    //camera = new THREE.PerspectiveCamera(75, aspect, 1, 10000);
-    camera = new THREE.PerspectiveCamera(90, aspect, 1, 10000);
+    camera = new THREE.PerspectiveCamera(75, aspect, 1, 10000);
+    //camera = new THREE.PerspectiveCamera(90, aspect, 1, 10000);
     camera.position.y = constants.CAMERA_HEIGHT;
 
     var width = wWidth;
@@ -128,7 +128,7 @@ function initialize() {
     playerLight.shadowDarkness = 0.75; //XXX: Can change later...
     playerLight.intensity = 2.5;
     playerLight.angle = Math.PI / 2;
-    playerLight.distance = tileSize * 8;
+    playerLight.distance = tileSize * 5;
 
     scene.add(camera);
 

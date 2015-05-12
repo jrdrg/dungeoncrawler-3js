@@ -154,8 +154,8 @@ function update(delta, moveCompleteCallback) {
 
         case player.states.MOVING:
 
-            player.position.x += (delta * 3 * walkTo.dir.x);
-            player.position.y += (delta * 3 * walkTo.dir.y);
+            player.position.x += (delta * 2.1 * walkTo.dir.x);
+            player.position.y += (delta * 2.1 * walkTo.dir.y);
 
             var reachedX = reachedDestination(walkTo.from.x, walkTo.to.x, player.position.x);
             var reachedY = reachedDestination(walkTo.from.y, walkTo.to.y, player.position.y);
