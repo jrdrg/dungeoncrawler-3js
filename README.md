@@ -1,3 +1,3 @@
-The OpenShift `nodejs` cartridge documentation can be found at:
+It's hosted at http://dungeoncrawler-jrtest.rhcloud.com/
 
-http://openshift.github.io/documentation/oo_cartridge_guide.html#nodejs
+WASD to move around, if you get into a fight with a floating skull use the arrow keys to go to 'run' and keep hitting enter until it succeeds.
